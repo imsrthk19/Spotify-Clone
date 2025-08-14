@@ -11,10 +11,3 @@ It’s not connected to the actual Spotify API — instead, it plays local audio
 - 🔄 Auto-play next song when the current one ends
 
 ---
-
-## How to Use
-1. Clone or download this repository  
-   ```bash
-   git clone https://github.com/imsrthk19/spotify-clone.git
-
-
