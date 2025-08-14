@@ -15,6 +15,6 @@ It’s not connected to the actual Spotify API — instead, it plays local audio
 ## How to Use
 1. Clone or download this repository  
    ```bash
-   git clone https://github.com/yourusername/spotify-clone.git
+   git clone https://github.com/imsrthk19/spotify-clone.git
 
 
