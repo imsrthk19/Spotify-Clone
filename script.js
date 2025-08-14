@@ -1,109 +1,112 @@
 console.log("Welcome to Spotify");
 
-// Initialize the Variables
+// Variables
 let songIndex = 0;
 let audioElement = new Audio('songs/1.mp3');
 let masterPlay = document.getElementById('masterPlay');
 let myProgressBar = document.getElementById('myProgressBar');
 let gif = document.getElementById('gif');
 let masterSongName = document.getElementById('masterSongName');
-let songItems = Array.from(document.getElementsByClassName('songItem'));
+let volumeBar = document.getElementById('volumeBar');
 
 let songs = [
-    {songName: "Warriyo - Mortals [NCS Release]", filePath: "songs/1.mp3", coverPath: "covers/1.jpg"},
-    {songName: "Cielo - Huma-Huma", filePath: "songs/2.mp3", coverPath: "covers/2.jpg"},
-    {songName: "DEAF KEV - Invincible [NCS Release]-320k", filePath: "songs/3.mp3", coverPath: "covers/3.jpg"},
-    {songName: "Different Heaven & EH!DE - My Heart [NCS Release]", filePath: "songs/4.mp3", coverPath: "covers/4.jpg"},
-    {songName: "Janji-Heroes-Tonight-feat-Johnning-NCS-Release", filePath: "songs/5.mp3", coverPath: "covers/5.jpg"},
-    {songName: "Rabba - Salam-e-Ishq", filePath: "songs/2.mp3", coverPath: "covers/6.jpg"},
-    {songName: "Sakhiyaan - Salam-e-Ishq", filePath: "songs/2.mp3", coverPath: "covers/7.jpg"},
-    {songName: "Bhula Dena - Salam-e-Ishq", filePath: "songs/2.mp3", coverPath: "covers/8.jpg"},
-    {songName: "Tumhari Kasam - Salam-e-Ishq", filePath: "songs/2.mp3", coverPath: "covers/9.jpg"},
-    {songName: "Na Jaana - Salam-e-Ishq", filePath: "songs/4.mp3", coverPath: "covers/10.jpg"},
-]
+    { songName: "Sapphire - (ft.Arijit Singh)", filePath: "songs/1.mp3", coverPath: "Sapphire-English-2025-20250623223610-500x500 cover.jpg" },
+    { songName: "Apna Bana Le", filePath: "songs/2.mp3", coverPath: "ApnaBanaLe.jpg" },
+    { songName: "Dhun", filePath: "songs/3.mp3", coverPath: "Dhun.jpg" },
+    { songName: "Tum Hi Ho", filePath: "songs/4.mp3", coverPath: "tumhiho.jpg" },
+    { songName: "Qayde Se", filePath: "songs/5.mp3", coverPath: "metroindino.jpg" },
+    { songName: "Kesariya", filePath: "songs/6.mp3", coverPath: "Kesariya.jpg" },
+    { songName: "Chaleya", filePath: "songs/7.mp3", coverPath: "chaleya.jpg" },
+    { songName: "Soulmate", filePath: "songs/8.mp3", coverPath: "soulmate.jpg" },
+    { songName: "Khairiyat (Happy)", filePath: "songs/9.mp3", coverPath: "Khairiyat(happy).jpg" },
+    { songName: "Zamaana Lage", filePath: "songs/10.mp3", coverPath: "metroindino.jpg" }
+];
 
-songItems.forEach((element, i)=>{ 
-    element.getElementsByTagName("img")[0].src = songs[i].coverPath; 
-    element.getElementsByClassName("songName")[0].innerText = songs[i].songName; 
-})
- 
+// Update song list covers and names
+Array.from(document.getElementsByClassName('songItem')).forEach((el, i) => {
+    el.getElementsByTagName('img')[0].src = songs[i].coverPath;
+    el.getElementsByClassName('songName')[0].innerText = songs[i].songName;
+});
 
-// Handle play/pause click
-masterPlay.addEventListener('click', ()=>{
-    if(audioElement.paused || audioElement.currentTime<=0){
-        audioElement.play();
-        masterPlay.classList.remove('fa-play-circle');
-        masterPlay.classList.add('fa-pause-circle');
-        gif.style.opacity = 1;
-    }
-    else{
-        audioElement.pause();
-        masterPlay.classList.remove('fa-pause-circle');
-        masterPlay.classList.add('fa-play-circle');
-        gif.style.opacity = 0;
-    }
-})
-// Listen to Events
-audioElement.addEventListener('timeupdate', ()=>{ 
-    // Update Seekbar
-    progress = parseInt((audioElement.currentTime/audioElement.duration)* 100); 
-    myProgressBar.value = progress;
-})
-
-myProgressBar.addEventListener('change', ()=>{
-    audioElement.currentTime = myProgressBar.value * audioElement.duration/100;
-})
-
-const makeAllPlays = ()=>{
-    Array.from(document.getElementsByClassName('songItemPlay')).forEach((element)=>{
-        element.classList.remove('fa-pause-circle');
-        element.classList.add('fa-play-circle');
-    })
+// Play selected song
+function playSong(index) {
+    songIndex = index;
+    audioElement.src = songs[songIndex].filePath;
+    masterSongName.innerText = songs[songIndex].songName;
+    audioElement.currentTime = 0;
+    audioElement.play();
+    gif.style.opacity = 1;
+    masterPlay.classList.remove('fa-play-circle');
+    masterPlay.classList.add('fa-pause-circle');
+    updatePlayButtons();
 }
 
-Array.from(document.getElementsByClassName('songItemPlay')).forEach((element)=>{
-    element.addEventListener('click', (e)=>{ 
-        makeAllPlays();
-        songIndex = parseInt(e.target.id);
-        e.target.classList.remove('fa-play-circle');
-        e.target.classList.add('fa-pause-circle');
-        audioElement.src = `songs/${songIndex+1}.mp3`;
-        masterSongName.innerText = songs[songIndex].songName;
-        audioElement.currentTime = 0;
-        audioElement.play();
-        gif.style.opacity = 1;
-        masterPlay.classList.remove('fa-play-circle');
-        masterPlay.classList.add('fa-pause-circle');
-    })
-})
+// Update small play buttons
+function updatePlayButtons() {
+    Array.from(document.getElementsByClassName('songItemPlay')).forEach(el => {
+        el.classList.add('fa-play-circle');
+        el.classList.remove('fa-pause-circle');
+    });
+    document.getElementById(songIndex).classList.remove('fa-play-circle');
+    document.getElementById(songIndex).classList.add('fa-pause-circle');
+}
 
-document.getElementById('next').addEventListener('click', ()=>{
-    if(songIndex>=9){
-        songIndex = 0
+// Master play/pause
+masterPlay.addEventListener('click', () => {
+    if (audioElement.paused) {
+        playSong(songIndex);
+    } else {
+        audioElement.pause();
+        gif.style.opacity = 0;
+        masterPlay.classList.remove('fa-pause-circle');
+        masterPlay.classList.add('fa-play-circle');
+        updatePlayButtons();
     }
-    else{
-        songIndex += 1;
-    }
-    audioElement.src = `songs/${songIndex+1}.mp3`;
-    masterSongName.innerText = songs[songIndex].songName;
-    audioElement.currentTime = 0;
-    audioElement.play();
-    masterPlay.classList.remove('fa-play-circle');
-    masterPlay.classList.add('fa-pause-circle');
+});
 
-})
+// Progress bar update
+audioElement.addEventListener('timeupdate', () => {
+    myProgressBar.value = parseInt((audioElement.currentTime / audioElement.duration) * 100);
+});
 
-document.getElementById('previous').addEventListener('click', ()=>{
-    if(songIndex<=0){
-        songIndex = 0
-    }
-    else{
-        songIndex -= 1;
-    }
-    audioElement.src = `songs/${songIndex+1}.mp3`;
-    masterSongName.innerText = songs[songIndex].songName;
-    audioElement.currentTime = 0;
-    audioElement.play();
-    masterPlay.classList.remove('fa-play-circle');
-    masterPlay.classList.add('fa-pause-circle');
-})
+// Seek
+myProgressBar.addEventListener('change', () => {
+    audioElement.currentTime = myProgressBar.value * audioElement.duration / 100;
+});
+
+// Song item click
+Array.from(document.getElementsByClassName('songItemPlay')).forEach(el => {
+    el.addEventListener('click', e => {
+        let idx = parseInt(e.target.id);
+        if (songIndex === idx && !audioElement.paused) {
+            audioElement.pause();
+            gif.style.opacity = 0;
+            masterPlay.classList.remove('fa-pause-circle');
+            masterPlay.classList.add('fa-play-circle');
+            updatePlayButtons();
+        } else {
+            playSong(idx);
+        }
+    });
+});
+
+// Next & Previous
+document.getElementById('next').addEventListener('click', () => {
+    songIndex = (songIndex + 1) % songs.length;
+    playSong(songIndex);
+});
+document.getElementById('previous').addEventListener('click', () => {
+    songIndex = (songIndex - 1 + songs.length) % songs.length;
+    playSong(songIndex);
+});
+
+// Autoplay next
+audioElement.addEventListener('ended', () => {
+    songIndex = (songIndex + 1) % songs.length;
+    playSong(songIndex);
+});
+
+// Volume control
+volumeBar.addEventListener('input', () => {
+    audioElement.volume = volumeBar.value / 100;
+});
